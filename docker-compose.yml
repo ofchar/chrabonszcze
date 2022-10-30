@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports: 
+      - 5000:5000
+  frontend:
+    build: ./frontend
+    ports: 
+      - 8080:8080
+  database:
+    image: postgres:14.1-alpine
+    environment:
+      - POSTGRES_USER=final_project
+      - POSTGRES_PASSWORD=password
+    ports:
+      - '5432:5432'
+    volumes: 
+      - db:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/db.sql
+volumes:
+  db:
+    driver: local
