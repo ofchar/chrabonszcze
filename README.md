@@ -5,7 +5,8 @@
 https://drive.google.com/file/d/1wFC0vaDbjtdq-PWq1Kmb6aNZHAGADAyb/view?usp=sharing
 
 ## SETUP GUIDE
-`cd `
+Run this command in root directory of the project  
+`sudo docker-compose up`  
 
 ## PROJECT STRUCTURE
 
