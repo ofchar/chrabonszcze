@@ -4,6 +4,9 @@
 
 https://drive.google.com/file/d/1wFC0vaDbjtdq-PWq1Kmb6aNZHAGADAyb/view?usp=sharing
 
+## SETUP GUIDE
+`cd `
+
 ## PROJECT STRUCTURE
 
 ROOT/  
