@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import psycopg2
 
 from migrations import runMigrations
+from queries import SELECT_FROM_USERS_BY_ID
 
 
 
@@ -25,6 +26,15 @@ connection = psycopg2.connect(
 @app.route('/')
 def home():
     return "TESTXD"
+
+@app.route('/users/<int:id>')
+def user(id):
+    with connection:
+        with connection.cursor() as cursor:
+            cursor.execute(SELECT_FROM_USERS_BY_ID, (id,))
+            record = cursor.fetchone()
+            print(record)
+    return {"id": record[0], "name": record[1], "email": record[2], "token": record[3]}, 200
 
 
 
