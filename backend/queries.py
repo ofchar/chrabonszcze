@@ -2,6 +2,10 @@ SELECT_FROM_USERS_BY_ID = (
     """SELECT * FROM users WHERE id = (%s);"""
 )
 
+SELECT_FROM_USERS_BY_EMAIL = (
+    """SELECT * FROM users WHERE email = (%s);"""
+)
+
 ADD_USER = (
     """INSERT INTO users (name, email, password, token) VALUES (%s, %s, %s, %s);"""
 )

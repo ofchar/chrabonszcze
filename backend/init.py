@@ -7,7 +7,7 @@ import bcrypt
 from random import randint
 
 from migrations import runMigrations
-from queries import SELECT_FROM_USERS_BY_ID, ADD_USER, LOGIN, LOGOUT, GET_TODAYS_HAPPINESS_RECORD_FOR_USER, CREATE_TODAYS_HAPPINESS_RECORD_FOR_USER, UPDATE_TODAYS_HAPPINESS_RECORD_FOR_USER, GET_TWO_WEEK_HAPPINESS_RECORDS_FOR_USER
+import queries
 from utils import getRandomString
 
 
@@ -38,19 +38,28 @@ def home():
 def register():
     with connection:
         with connection.cursor() as cursor:
-            cursor.execute(ADD_USER, (
+            cursor.execute(queries.SELECT_FROM_USERS_BY_EMAIL, (
+                request.json['email'],
+            ))
+            users = cursor.fetchall()
+    if len(users) > 0:
+        return 'user with such email already exists', 409
+
+    with connection:
+        with connection.cursor() as cursor:
+            cursor.execute(queries.ADD_USER, (
                 request.json['name'],
                 request.json['email'],
                 str(bcrypt.hashpw(request.json['password'].encode('utf-8'), salt).decode('utf8')),
                 getRandomString(169)
             ))
-    return 'jest git byczq', 201
+    return 'its good byczq', 201
 
 @app.route('/login', methods=['POST'])
 def login():
     with connection:
         with connection.cursor() as cursor:
-            cursor.execute(LOGIN, (
+            cursor.execute(queries.LOGIN, (
                 request.json['email'],
             ))
             user = cursor.fetchone()
@@ -58,24 +67,33 @@ def login():
         if bcrypt.checkpw(request.json['password'].encode('utf-8'), user[3].encode('utf-8')):
             return {"name": user[1], "email": user[2], "token": user[4]}, 200
         else:
-            return 'zle haslo byczq', 403
+            return 'wrong password byczq', 403
     else:
-        return 'zly email byczq', 404
+        return 'wrong email byczq', 404
 
 # logout is just reseting the user's token. you know. sEcURiTy.
 @app.route('/logout', methods=['POST'])
 def logout():
+    if not 'token' in request.json:
+        return 'no token byczq', 400
+
     with connection:
         with connection.cursor() as cursor:
-            cursor.execute(LOGOUT, (
+            cursor.execute(queries.LOGOUT, (
                 getRandomString(169),
                 request.json['token']
             ))
-    return 'jest git byczq', 200
+    return 'its good byczq', 200
 
 
 @app.route('/api/record', methods=['POST'])
 def recordMessage():
+    if not 'token' in request.json:
+        return 'no token byczq', 400
+
+    if not 'message' in request.json:
+        return 'no message byczq', 400
+
     message = request.json['message']
 
     # Dear @mlExperts, in line below we need to assign a value -1, 0 or 1 to the happinessValue based on message variable
@@ -88,7 +106,7 @@ def recordMessage():
 
     with connection:
         with connection.cursor() as cursor:
-            cursor.execute(GET_TODAYS_HAPPINESS_RECORD_FOR_USER, (
+            cursor.execute(queries.GET_TODAYS_HAPPINESS_RECORD_FOR_USER, (
                 request.json['token'],
             ))
             recording = cursor.fetchone()
@@ -97,7 +115,7 @@ def recordMessage():
         # recording for today found, we can just update it
         with connection:
             with connection.cursor() as cursor:
-                cursor.execute(UPDATE_TODAYS_HAPPINESS_RECORD_FOR_USER, (
+                cursor.execute(queries.UPDATE_TODAYS_HAPPINESS_RECORD_FOR_USER, (
                     0 + happinessValue,
                     request.json['token']
                 ))
@@ -105,18 +123,21 @@ def recordMessage():
         # recording for today not found, we need to create it
         with connection:
             with connection.cursor() as cursor:
-                cursor.execute(CREATE_TODAYS_HAPPINESS_RECORD_FOR_USER, (
+                cursor.execute(queries.CREATE_TODAYS_HAPPINESS_RECORD_FOR_USER, (
                     happinessValue,
                     request.json['token']
                 ))
 
-    return 'jest git byczq', 201
+    return 'its good byczq', 201
 
 @app.route('/api/happiness-today', methods=['GET'])
 def getHappinessToday():
+    if not 'token' in request.json:
+        return 'no token byczq', 400
+
     with connection:
         with connection.cursor() as cursor:
-            cursor.execute(GET_TODAYS_HAPPINESS_RECORD_FOR_USER, (
+            cursor.execute(queries.GET_TODAYS_HAPPINESS_RECORD_FOR_USER, (
                 request.json['token'],
             ))
             recording = cursor.fetchone()
@@ -127,11 +148,14 @@ def getHappinessToday():
 
 @app.route('/api/happiness', methods=['GET'])
 def getHappiness():
+    if not 'token' in request.json:
+        return 'no token byczq', 400
+
     data = []
 
     with connection:
         with connection.cursor() as cursor:
-            cursor.execute(GET_TWO_WEEK_HAPPINESS_RECORDS_FOR_USER, (
+            cursor.execute(queries.GET_TWO_WEEK_HAPPINESS_RECORDS_FOR_USER, (
                 request.json['token'],
             ))
             recordings = cursor.fetchall()
