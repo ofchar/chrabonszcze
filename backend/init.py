@@ -1,7 +1,10 @@
-from flask import Flask, render_template, session, request
+# God, please forgive me for what i'm about to code here.
+from flask import Flask, render_template, request
 import os
 from dotenv import load_dotenv
 import psycopg2
+import bcrypt
+from random import randint
 
 from migrations import runMigrations
 from queries import SELECT_FROM_USERS_BY_ID, ADD_USER
@@ -13,7 +16,8 @@ from utils import getRandomString
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/' # secret! dont look at it!
+
+salt = bcrypt.gensalt() # but i prefer pepper
 
 connection = psycopg2.connect(
     host=os.environ.get("DATABASE_URL"),
@@ -30,28 +34,37 @@ connection = psycopg2.connect(
 def home():
     return "TESTXD"
 
-@app.route('/users/<int:id>')
-def show_user(id):
-    with connection:
-        with connection.cursor() as cursor:
-            cursor.execute(SELECT_FROM_USERS_BY_ID, (id,))
-            record = cursor.fetchone()
-            print(record)
-    return {"id": record[0], "name": record[1], "email": record[2], "token": record[3]}, 200
-
 @app.route('/register', methods=['POST'])
-def store_user():
-    token = getRandomString(128)
-    print(token)
+def register():
     with connection:
         with connection.cursor() as cursor:
             cursor.execute(ADD_USER, (
                 request.json['name'],
                 request.json['email'],
-                request.json['password'], # TODO Hash it xd
-                token
+                str(bcrypt.hashpw(request.json['password'].encode('utf-8'), salt).decode('utf8')),
+                getRandomString(169)
             ))
-    return 'ok', 201
+    return 'jest git byczq', 201
+
+@app.route('/login', methods=['POST'])
+def login():
+    with connection:
+        with connection.cursor() as cursor:
+            cursor.execute(LOGIN, (
+                request.json['email'],
+            ))
+            user = cursor.fetchone()
+    if user:
+        if bcrypt.checkpw(request.json['password'].encode('utf-8'), user[3].encode('utf-8')):
+            return {"name": user[1], "email": user[2], "token": user[4]}, 200
+        else:
+            return 'zle haslo byczq', 403
+    else:
+        return 'zly email byczq', 404
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    return 'nah', 500
 
 
 
