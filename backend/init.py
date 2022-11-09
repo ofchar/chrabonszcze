@@ -7,7 +7,7 @@ import bcrypt
 from random import randint
 
 from migrations import runMigrations
-from queries import SELECT_FROM_USERS_BY_ID, ADD_USER, LOGIN, LOGOUT, GET_TODAYS_HAPPINESS_RECORD_FOR_USER, CREATE_TODAYS_HAPPINESS_RECORD_FOR_USER, UPDATE_TODAYS_HAPPINESS_RECORD_FOR_USER
+from queries import SELECT_FROM_USERS_BY_ID, ADD_USER, LOGIN, LOGOUT, GET_TODAYS_HAPPINESS_RECORD_FOR_USER, CREATE_TODAYS_HAPPINESS_RECORD_FOR_USER, UPDATE_TODAYS_HAPPINESS_RECORD_FOR_USER, GET_TWO_WEEK_HAPPINESS_RECORDS_FOR_USER
 from utils import getRandomString
 
 
@@ -85,7 +85,7 @@ def recordMessage():
     happinessValue = randint(-1, 1)
 
     happinessValue = happinessValue / 50
-    print(happinessValue)
+
     with connection:
         with connection.cursor() as cursor:
             cursor.execute(GET_TODAYS_HAPPINESS_RECORD_FOR_USER, (
@@ -112,6 +112,38 @@ def recordMessage():
 
     return 'jest git byczq', 201
 
+@app.route('/api/happiness-today', methods=['GET'])
+def getHappinessToday():
+    with connection:
+        with connection.cursor() as cursor:
+            cursor.execute(GET_TODAYS_HAPPINESS_RECORD_FOR_USER, (
+                request.json['token'],
+            ))
+            recording = cursor.fetchone()
+    if recording:
+        return {"date": recording[2], "value": recording[3]}
+    else:
+        return {"date": NULL, "value": 0}
+
+@app.route('/api/happiness', methods=['GET'])
+def getHappiness():
+    data = []
+
+    with connection:
+        with connection.cursor() as cursor:
+            cursor.execute(GET_TWO_WEEK_HAPPINESS_RECORDS_FOR_USER, (
+                request.json['token'],
+            ))
+            recordings = cursor.fetchall()
+
+    for record in recordings:
+        result = {
+            "date": record[2],
+            "value": record[3]
+        }
+        data.append(result)
+
+    return {"data": data}
 
 
 
