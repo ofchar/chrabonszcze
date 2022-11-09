@@ -7,7 +7,7 @@ import bcrypt
 from random import randint
 
 from migrations import runMigrations
-from queries import SELECT_FROM_USERS_BY_ID, ADD_USER
+from queries import SELECT_FROM_USERS_BY_ID, ADD_USER, LOGIN, GET_TODAYS_HAPPINESS_RECORD_FOR_USER, CREATE_TODAYS_HAPPINESS_RECORD_FOR_USER, UPDATE_TODAYS_HAPPINESS_RECORD_FOR_USER
 from utils import getRandomString
 
 
@@ -65,6 +65,44 @@ def login():
 @app.route('/logout', methods=['POST'])
 def logout():
     return 'nah', 500
+
+@app.route('/api/record', methods=['POST'])
+def recordMessage():
+    message = request.json['message']
+
+    # Dear @mlExperts, in line below we need to assign a value -1, 0 or 1 to the happinessValue based on message variable
+    # (which obviously is message from the user). -1 for negative, 0 for neutral and 1 for positive.
+    # After that is working please remove the randint line.
+    # happinessValue = MLMODEL(message)
+    happinessValue = randint(-1, 1)
+
+    happinessValue = happinessValue / 50
+    print(happinessValue)
+    with connection:
+        with connection.cursor() as cursor:
+            cursor.execute(GET_TODAYS_HAPPINESS_RECORD_FOR_USER, (
+                request.json['token'],
+            ))
+            recording = cursor.fetchone()
+
+    if recording:
+        # recording for today found, we can just update it
+        with connection:
+            with connection.cursor() as cursor:
+                cursor.execute(UPDATE_TODAYS_HAPPINESS_RECORD_FOR_USER, (
+                    0 + happinessValue,
+                    request.json['token']
+                ))
+    else:
+        # recording for today not found, we need to create it
+        with connection:
+            with connection.cursor() as cursor:
+                cursor.execute(CREATE_TODAYS_HAPPINESS_RECORD_FOR_USER, (
+                    happinessValue,
+                    request.json['token']
+                ))
+
+    return 'jest git byczq', 201
 
 
 
