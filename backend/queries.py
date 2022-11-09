@@ -10,6 +10,10 @@ LOGIN = (
     """SELECT * FROM users WHERE email = (%s);"""
 )
 
+LOGOUT = (
+    """UPDATE users SET token = (%s) WHERE token = (%s)"""
+)
+
 GET_TODAYS_HAPPINESS_RECORD_FOR_USER = (
     """SELECT hr.* FROM happiness_recordings AS hr
         JOIN users ON users.id = hr.user_id

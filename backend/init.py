@@ -7,7 +7,7 @@ import bcrypt
 from random import randint
 
 from migrations import runMigrations
-from queries import SELECT_FROM_USERS_BY_ID, ADD_USER, LOGIN, GET_TODAYS_HAPPINESS_RECORD_FOR_USER, CREATE_TODAYS_HAPPINESS_RECORD_FOR_USER, UPDATE_TODAYS_HAPPINESS_RECORD_FOR_USER
+from queries import SELECT_FROM_USERS_BY_ID, ADD_USER, LOGIN, LOGOUT, GET_TODAYS_HAPPINESS_RECORD_FOR_USER, CREATE_TODAYS_HAPPINESS_RECORD_FOR_USER, UPDATE_TODAYS_HAPPINESS_RECORD_FOR_USER
 from utils import getRandomString
 
 
@@ -62,9 +62,17 @@ def login():
     else:
         return 'zly email byczq', 404
 
+# logout is just reseting the user's token. you know. sEcURiTy.
 @app.route('/logout', methods=['POST'])
 def logout():
-    return 'nah', 500
+    with connection:
+        with connection.cursor() as cursor:
+            cursor.execute(LOGOUT, (
+                getRandomString(169),
+                request.json['token']
+            ))
+    return 'jest git byczq', 200
+
 
 @app.route('/api/record', methods=['POST'])
 def recordMessage():
