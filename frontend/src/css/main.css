@@ -1,0 +1,24 @@
+#app {
+    width: 100vw;
+    height: 100vh;
+    background-color: #d8d8d8;
+    font-family: 'Work Sans', sans-serif;
+}
+
+input {
+    border: 1px lightblue solid;
+    border-radius: 5px;
+}
+
+.button-custom {
+    border: 2px solid aqua;
+    border-radius: 15px;
+    padding: 5px 20px;
+    background-color: aliceblue;
+}
+
+.button-custom:hover {
+    transition: ease-out 0.5s;
+    background-color: aqua;
+    border: 2px solid rgb(147 147 147);
+}
