@@ -7,8 +7,7 @@
         </div>
         <div class="custom-navbar-right">
             <div class="d-flex" style="gap: 20px;">
-                <button class="button-custom">Login</button>
-                <button class="button-custom">Register</button>
+                <button class="button-custom">Logout</button>
             </div>
         </div>
     </div>

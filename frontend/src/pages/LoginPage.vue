@@ -15,6 +15,7 @@
                         <input>
                     </div>
                     <div class="w-100 d-flex mt-4">
+                        <button class="button-custom" style="margin-right: auto;">Register</button>
                         <button class="button-custom" style="margin-left: auto;">Login</button>
                     </div>
                 </div>
