@@ -10,6 +10,7 @@ const router = createRouter({
     routes, // short for `routes: routes`
 });
 
+import 'bootstrap/dist/css/bootstrap.css';
 
 const app = createApp(App)
 
