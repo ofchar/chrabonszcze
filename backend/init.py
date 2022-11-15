@@ -10,6 +10,16 @@ from migrations import runMigrations
 import queries
 from utils import getRandomString
 
+from ml import prepare, text_classify
+
+# import pandas as pd
+# import re
+# import nltk
+# from nltk.corpus import stopwords
+# from nltk.tokenize import sent_tokenize, word_tokenize
+# from nltk.stem import PorterStemmer
+# from nltk.stem import WordNetLemmatizer
+
 
 
 # SETUP
@@ -26,20 +36,13 @@ connection = psycopg2.connect(
 
 
 
-# I HATE PYTHON
-if __name__ == "__main__":
-    runMigrations(connection)
-
-    port = int(os.environ.get('PORT', 5000))
-
-    app = create_app
-
-    app.run(debug=True, host='0.0.0.0', port=port)
 
 
 
 def create_app():
     app = Flask(__name__)
+
+    pn, pp, ppn, ppp = prepare()
 
     @app.route('/')
     def home():
@@ -107,11 +110,7 @@ def create_app():
 
         message = request.json['message']
 
-        # Dear @mlExperts, in line below we need to assign a value -1, 0 or 1 to the happinessValue based on message variable
-        # (which obviously is message from the user). -1 for negative, 0 for neutral and 1 for positive.
-        # After that is working please remove the randint line.
-        # happinessValue = MLMODEL(message)
-        happinessValue = randint(-1, 1)
+        happinessValue = text_classify(pn, pp, ppn, ppp, message)
 
         happinessValue = happinessValue / 50
 
@@ -139,7 +138,7 @@ def create_app():
                         request.json['token']
                     ))
 
-        return 'its good byczq', 201
+        return {"value": happinessValue}, 201
 
     @app.route('/api/happiness-today', methods=['GET'])
     def getHappinessToday():
@@ -181,3 +180,16 @@ def create_app():
         return {"data": data}, 200
 
     return app
+
+
+
+
+# I HATE PYTHON
+if __name__ == "__main__":
+    runMigrations(connection)
+
+    port = int(os.environ.get('PORT', 5000))
+
+    app = create_app()
+
+    app.run(debug=True, host='0.0.0.0', port=port)
