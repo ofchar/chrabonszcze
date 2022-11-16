@@ -7,13 +7,29 @@
         </div>
         <div class="custom-navbar-right">
             <div class="d-flex" style="gap: 20px;">
-                <button class="button-custom">Logout</button>
+                <button v-on:click="logout()" v-if="_token && _token != 'null'" class="button-custom">Logout</button>
             </div>
         </div>
     </div>
 </template>
 <script>
 export default {
+    data() {
+        return {
+            _token: localStorage.getItem('_token')
+        }
+    },
+    methods: {
+        logout() {
+            this.axios.post('http://localhost:5000/logout', {
+                'token': this._token
+            }).then(response => {
+                localStorage.setItem('user', null)
+                localStorage.setItem('_token', null)
+                location.reload()
+            })
+        }
+    }
 
 }
 </script>

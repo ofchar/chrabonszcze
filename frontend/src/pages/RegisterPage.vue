@@ -8,23 +8,25 @@
                 <div class="card-body p-4 row">
                     <div class="d-flex flex-column mb-4">
                         <label>Email</label>
-                        <input>
+                        <input v-model="email">
                     </div>
                     <div class="d-flex flex-column mb-4">
-                        <label>Nameee</label>
-                        <input>
+                        <label>Name</label>
+                        <input v-model="name">
                     </div>
                     <div class="d-flex flex-column mb-4">
                         <label>Password</label>
-                        <input>
+                        <input v-model="password" type="password">
                     </div>
                     <div class="d-flex flex-column">
                         <label>Repeat password</label>
-                        <input>
+                        <input v-model="rePassword" type="password">
                     </div>
                     <div class="w-100 d-flex mt-4">
-                        <button class="button-custom" style="margin-right: auto;">Login</button>
-                        <button class="button-custom" style="margin-left: auto;">Register</button>
+                        <button v-on:click="$router.push({ path: '/login' })" class="button-custom"
+                            style="margin-right: auto;">Login</button>
+                        <button v-on:click="register()" class="button-custom"
+                            style="margin-left: auto;">Register</button>
                     </div>
                 </div>
             </div>
@@ -33,7 +35,27 @@
 </template>
 <script>
 export default {
-
+    data() {
+        return {
+            email: '',
+            name: '',
+            password: '',
+            rePassword: ''
+        }
+    },
+    methods: {
+        register() {
+            this.axios.post('http://localhost:5000/register', {
+                'name': this.name,
+                'email': this.email,
+                'password': this.password,
+            }).then(response => {
+                if (response.status == 201) {
+                    this.$router.push({ path: '/login' })
+                }
+            })
+        }
+    }
 }
 </script>
 <style>
