@@ -147,13 +147,13 @@ def create_app():
     @app.route('/api/happiness-today', methods=['GET'])
     @cross_origin()
     def getHappinessToday():
-        if not 'token' in request.json:
+        if not 'token' in request.args:
             return 'no token byczq', 400
 
         with connection:
             with connection.cursor() as cursor:
                 cursor.execute(queries.GET_TODAYS_HAPPINESS_RECORD_FOR_USER, (
-                    request.json['token'],
+                    request.args['token'],
                 ))
                 recording = cursor.fetchone()
         if recording:
