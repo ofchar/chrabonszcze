@@ -17,17 +17,18 @@ export default {
         NavbarComponent,
     },
     methods: {
-        middlware() {
+        afterware() {
             let _token = null
-            _token = localStorage.getItem(_token);
-            if (!_token) {
+            _token = localStorage.getItem('_token');
+            console.log(_token);
+            if (!_token || _token == 'null') {
                 if ((this.$route.path != '/login' && this.$route.path != '/register')) {
                     this.$router.push({ path: '/login' })
                 }
             }
             else {
-                if (this.$route.path == '/login' && this.$route.path == '/register') {
-                    this.$router.push({ path: '/home' })
+                if (this.$route.path == '/login' || this.$route.path == '/register') {
+                    this.$router.push({ path: '/' })
                 }
             }
 
@@ -35,7 +36,7 @@ export default {
     },
     watch: {
         '$route'() {
-            this.middlware()
+            this.afterware()
         }
     },
     mounted() {
