@@ -11,7 +11,7 @@
                         <input>
                     </div>
                     <div class="d-flex flex-column mb-4">
-                        <label>Name</label>
+                        <label>Nameee</label>
                         <input>
                     </div>
                     <div class="d-flex flex-column mb-4">

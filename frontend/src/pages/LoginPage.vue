@@ -8,14 +8,14 @@
                 <div class="card-body p-4 row">
                     <div class="d-flex flex-column mb-4">
                         <label>Email</label>
-                        <input>
+                        <input v-model="login">
                     </div>
                     <div class="d-flex flex-column">
                         <label>Password</label>
-                        <input>
+                        <input v-model="password" type="password">
                     </div>
                     <div class="w-100 d-flex mt-4">
-                        <button class="button-custom" style="margin-right: auto;">Register</button>
+                        <button v-on:click="$router.push({ path: '/register' })" class="button-custom" style="margin-right: auto;">Register</button>
                         <button class="button-custom" style="margin-left: auto;">Login</button>
                     </div>
                 </div>
@@ -25,6 +25,12 @@
 </template>
 <script>
 export default {
+    data() {
+        return {
+            login: '',
+            password: '',
+        }
+    }
 
 }
 </script>

@@ -3,10 +3,14 @@ version: '3.8'
 services:
   backend:
     build: ./backend
+    volumes:
+      - ./backend:/app
     ports: 
       - 5000:5000
   frontend:
     build: ./frontend
+    volumes:
+      - ./frontend:/app
     ports: 
       - 8080:8080
   database:
