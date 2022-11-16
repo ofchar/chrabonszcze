@@ -1,7 +1,7 @@
 <template>
     <div>
         <div style="font-weight: bold; text-align: start;">
-            <svg width="436.84999999999997px" height="248px" xmlns="http://www.w3.org/2000/svg"
+            <svg class="hello" width="436.84999999999997px" height="248px" xmlns="http://www.w3.org/2000/svg"
                 viewBox="31.575000000000017 -49 436.84999999999997 248" style="background: none;"
                 preserveAspectRatio="xMidYMid">
                 <defs>
@@ -24,10 +24,10 @@
                     </g>
                 </g>
             </svg>
-            <h1>USERNAME ! </h1>
+            <h1 class="user-name">{{ user.name }}</h1>
         </div>
 
-        <div class="card home-card mt-5">
+        <div class="card home-card mt-5 daily-report">
             <div class="card-header">
                 <h4>Daily report</h4>
             </div>
@@ -35,7 +35,7 @@
                 YOU FEELING LIKE SHIT TODAY MY FRIEND
             </div>
         </div>
-        <div class="card home-card mt-5">
+        <div class="card home-card mt-5 weekly-report">
             <div class="card-header">
                 <h4 class="mb-0">Weekly report</h4>
             </div>
@@ -70,6 +70,10 @@ export default {
     },
     data() {
         return {
+            user: JSON.parse(localStorage.getItem('user')),
+            _token: localStorage.getItem('_token'),
+            dailyReport: null,
+            weeklyReport: null,
             settings: {
                 itemsToShow: 1,
                 snapAlign: 'center',
@@ -90,8 +94,25 @@ export default {
             },
         }
     },
-    mounted() {
+    methods: {
+        getDailyReport() {
+            this.axios({
+                method: 'get',
+                url: 'http://localhost:5000/api/happiness-today',
+                headers: {},
+                params: {
+                    token: this._token
+                }
+            }).then(response => {
+                this.dailyReport = response.data
+            })
+        },
+        getWeeklyReport() {
 
+        }
+    },
+    mounted() {
+        this.getDailyReport()
     }
 }
 </script>
@@ -100,5 +121,54 @@ export default {
 
 text {
     font-size: 64px;
+}
+
+.hello {
+    opacity: 0;
+    animation: fadein 1s;
+    animation-fill-mode: forwards;
+}
+
+.user-name {
+    opacity: 0;
+    animation: fadein 1s;
+    animation-delay: 0.5s;
+    animation-fill-mode: forwards;
+}
+
+.daily-report {
+    opacity: 0;
+    animation: fadeinbellow 1s;
+    animation-delay: 0.7s;
+    animation-fill-mode: forwards;
+}
+
+.weekly-report {
+    opacity: 0;
+    animation: fadeinbellow 1s;
+    animation-delay: 1.2s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadein {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeinbellow {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 30px, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0px, 0);
+    }
 }
 </style>
