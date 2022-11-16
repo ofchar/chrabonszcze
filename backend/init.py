@@ -12,6 +12,8 @@ from utils import getRandomString
 
 from ml import prepare, text_classify
 
+from flask_cors import CORS, cross_origin
+
 # import pandas as pd
 # import re
 # import nltk
@@ -25,6 +27,9 @@ from ml import prepare, text_classify
 # SETUP
 load_dotenv()
 
+prepare()
+
+
 salt = bcrypt.gensalt() # but i prefer pepper
 
 connection = psycopg2.connect(
@@ -34,21 +39,17 @@ connection = psycopg2.connect(
     password=os.environ.get("DATABASE_PASSWORD")
 )
 
-
-
-
-
-
 def create_app():
     app = Flask(__name__)
-
-    pn, pp, ppn, ppp = prepare()
+    cors = CORS(app)
+    app.config['CORS_HEADERS'] = 'Content-Type'
 
     @app.route('/')
     def home():
         return "TESTXD"
 
     @app.route('/register', methods=['POST'])
+    @cross_origin()
     def register():
         with connection:
             with connection.cursor() as cursor:
@@ -70,6 +71,7 @@ def create_app():
         return 'its good byczq', 201
 
     @app.route('/login', methods=['POST'])
+    @cross_origin()
     def login():
         with connection:
             with connection.cursor() as cursor:
@@ -87,6 +89,7 @@ def create_app():
 
     # logout is just reseting the user's token. you know. sEcURiTy.
     @app.route('/logout', methods=['POST'])
+    @cross_origin()
     def logout():
         if not 'token' in request.json:
             return 'no token byczq', 400
@@ -101,6 +104,7 @@ def create_app():
 
 
     @app.route('/api/record', methods=['POST'])
+    @cross_origin()
     def recordMessage():
         if not 'token' in request.json:
             return 'no token byczq', 400
@@ -110,7 +114,7 @@ def create_app():
 
         message = request.json['message']
 
-        happinessValue = text_classify(pn, pp, ppn, ppp, message)
+        happinessValue = text_classify(message)
 
         happinessValue = happinessValue / 50
 
@@ -141,6 +145,7 @@ def create_app():
         return {"value": happinessValue}, 201
 
     @app.route('/api/happiness-today', methods=['GET'])
+    @cross_origin()
     def getHappinessToday():
         if not 'token' in request.json:
             return 'no token byczq', 400
@@ -157,6 +162,7 @@ def create_app():
             return {"date": NULL, "value": 0}, 200
 
     @app.route('/api/happiness', methods=['GET'])
+    @cross_origin()
     def getHappiness():
         if not 'token' in request.json:
             return 'no token byczq', 400
