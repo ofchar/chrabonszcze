@@ -32,7 +32,10 @@
                 <h4>Daily report</h4>
             </div>
             <div class="card-body">
-                YOU FEELING LIKE SHIT TODAY MY FRIEND
+                <div v-if="dailyReport">
+                    <image-component url="assets/good.png"></image-component>
+                    {{ dailyReport.value }}
+                </div>
             </div>
         </div>
         <div class="card home-card mt-5 weekly-report">
@@ -47,7 +50,7 @@
                                 <h6 style="" class="mb-0">Date</h6>
                             </div>
                             <div class="card-body">
-                                CHUJOWOOOOOOOOOOOOOOOOOOOOOOOO
+
                             </div>
                         </div>
                     </Slide>
@@ -62,11 +65,13 @@
 <script>
 import 'vue3-carousel/dist/carousel.css'
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
+import ImageComponent from '@/components/ImageComponent.vue'
 export default {
     components: {
         Carousel,
         Slide,
         Navigation,
+        ImageComponent
     },
     data() {
         return {
@@ -108,11 +113,21 @@ export default {
             })
         },
         getWeeklyReport() {
-
+            this.axios({
+                method: 'get',
+                url: 'http://localhost:5000/api/happiness',
+                headers: {},
+                params: {
+                    token: this._token
+                }
+            }).then(response => {
+                this.weeklyReport = response.data
+            })
         }
     },
     mounted() {
         this.getDailyReport()
+        this.getWeeklyReport()
     }
 }
 </script>
