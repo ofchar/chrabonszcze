@@ -24,7 +24,7 @@
                     </g>
                 </g>
             </svg>
-            <h1 class="user-name">{{ user.name }}</h1>
+            <h1 v-if="user" class="user-name">{{ user.name }}</h1>
         </div>
 
         <div class="card home-card mt-5 daily-report">
@@ -32,9 +32,8 @@
                 <h4>Daily report</h4>
             </div>
             <div class="card-body">
-                <div v-if="dailyReport">
-                    <image-component url="assets/good.png"></image-component>
-                    {{ dailyReport.value }}
+                <div class="d-flex justify-content-center" v-if="dailyReport">
+                    <image-component :value="dailyReport.value"></image-component>
                 </div>
             </div>
         </div>
@@ -43,14 +42,14 @@
                 <h4 class="mb-0">Weekly report</h4>
             </div>
             <div class="card-body">
-                <Carousel ref="weeklyCarausel" :settings="settings" :breakpoints="breakpoints">
-                    <Slide v-for="slide in 7" :key="slide" style="padding: 15px 5px">
+                <Carousel v-if="weeklyReport" ref="weeklyCarausel" :settings="settings" :breakpoints="breakpoints">
+                    <Slide v-for="day in weeklyReport" :key="slide" style="padding: 15px 5px">
                         <div class="card">
                             <div class="card-header">
-                                <h6 style="" class="mb-0">Date</h6>
+                                <h6 style="" class="mb-0">{{ day.date.slice(0, -12) }}</h6>
                             </div>
                             <div class="card-body">
-
+                                <image-component :value="day.value" :size="1"></image-component>
                             </div>
                         </div>
                     </Slide>
@@ -121,7 +120,7 @@ export default {
                     token: this._token
                 }
             }).then(response => {
-                this.weeklyReport = response.data
+                this.weeklyReport = response.data.data
             })
         }
     },
