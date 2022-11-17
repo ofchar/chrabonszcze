@@ -39,7 +39,7 @@
         </div>
         <div class="card home-card mt-5 weekly-report">
             <div class="card-header">
-                <h4 class="mb-0">Weekly report</h4>
+                <h4 class="mb-0">2 weeks report</h4>
             </div>
             <div class="card-body">
                 <Carousel v-if="weeklyReport" ref="weeklyCarausel" :settings="settings" :breakpoints="breakpoints">
