@@ -39,6 +39,7 @@ connection = psycopg2.connect(
     password=os.environ.get("DATABASE_PASSWORD")
 )
 
+
 def create_app():
     app = Flask(__name__)
     cors = CORS(app)
@@ -153,7 +154,7 @@ def create_app():
         with connection:
             with connection.cursor() as cursor:
                 cursor.execute(queries.GET_TODAYS_HAPPINESS_RECORD_FOR_USER, (
-                    request.args['token'],
+                    request.args.get('token'),
                 ))
                 recording = cursor.fetchone()
         if recording:
@@ -164,7 +165,7 @@ def create_app():
     @app.route('/api/happiness', methods=['GET'])
     @cross_origin()
     def getHappiness():
-        if not 'token' in request.json:
+        if not 'token' in request.args:
             return 'no token byczq', 400
 
         data = []
@@ -172,7 +173,7 @@ def create_app():
         with connection:
             with connection.cursor() as cursor:
                 cursor.execute(queries.GET_TWO_WEEK_HAPPINESS_RECORDS_FOR_USER, (
-                    request.json['token'],
+                    request.args.get('token'),
                 ))
                 recordings = cursor.fetchall()
 
