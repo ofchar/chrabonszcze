@@ -160,7 +160,7 @@ def create_app():
         if recording:
             return {"date": recording[2], "value": recording[3]}, 200
         else:
-            return {"date": NULL, "value": 0}, 200
+            return {"date": None, "value": None}, 200
 
     @app.route('/api/happiness', methods=['GET'])
     @cross_origin()
