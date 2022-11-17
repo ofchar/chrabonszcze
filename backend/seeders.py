@@ -36,11 +36,16 @@ POPULATE_HAPPINESS = (
 
 
 def happy(cursor):
-    for i in range(0, 40):
-        d = i % 20
+    for i in range(0, 20):
         cursor.execute(POPULATE_HAPPINESS, (
-            randint(2, 3),
-            datetime.today() - timedelta(days = d),
+            2,
+            datetime.today() - timedelta(days = i),
+            uniform(-1, 1)
+        ))
+    for i in range(0, 20):
+        cursor.execute(POPULATE_HAPPINESS, (
+            3,
+            datetime.today() - timedelta(days = i),
             uniform(-1, 1)
         ))
 

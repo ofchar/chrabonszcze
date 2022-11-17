@@ -176,7 +176,6 @@ def create_app():
                     request.args.get('token'),
                 ))
                 recordings = cursor.fetchall()
-
         for record in recordings:
             result = {
                 "date": record[2],

@@ -42,6 +42,7 @@ UPDATE_TODAYS_HAPPINESS_RECORD_FOR_USER = (
 
 GET_TWO_WEEK_HAPPINESS_RECORDS_FOR_USER = (
     """SELECT hr.* FROM happiness_recordings AS hr
-        JOIN users ON users.id = hr.user_id
-        WHERE users.token = (%s) AND hr.record_date > CURRENT_DATE - interval '14' day"""
+        RIGHT JOIN users ON users.id = hr.user_id
+        WHERE users.token = (%s) AND hr.record_date > CURRENT_DATE - interval '14' day
+        ORDER BY hr.record_date"""
 )
