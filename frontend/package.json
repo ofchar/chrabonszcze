@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "axios": "^1.1.3",
@@ -19,10 +21,16 @@
   "devDependencies": {
     "@babel/core": "^7.12.16",
     "@babel/eslint-parser": "^7.12.16",
+    "@vitejs/plugin-vue": "latest",
+    "@vitest/coverage-c8": "^0.25.3",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
+    "@vue/test-utils": "^2.0.0",
+    "jsdom": "latest",
     "sass": "^1.56.1",
-    "sass-loader": "^13.2.0"
+    "sass-loader": "^13.2.0",
+    "vite": "latest",
+    "vitest": "latest"
   },
   "browserslist": [
     "> 1%",
