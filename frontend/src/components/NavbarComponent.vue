@@ -7,7 +7,8 @@
         </div>
         <div class="custom-navbar-right">
             <div class="d-flex" style="gap: 20px;">
-                <button v-on:click="logout()" v-if="_token && _token != 'null'" class="button-custom">Logout</button>
+                <button v-on:click="logout()" id="logout" v-if="_token && _token != 'null'"
+                    class="button-custom">Logout</button>
             </div>
         </div>
     </div>

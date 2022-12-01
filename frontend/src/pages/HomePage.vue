@@ -64,7 +64,7 @@
 <script>
 import 'vue3-carousel/dist/carousel.css'
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
-import ImageComponent from '@/components/ImageComponent.vue'
+import ImageComponent from '../components/ImageComponent.vue'
 export default {
     components: {
         Carousel,
@@ -100,10 +100,7 @@ export default {
     },
     methods: {
         getDailyReport() {
-            this.axios({
-                method: 'get',
-                url: 'http://localhost:5000/api/happiness-today',
-                headers: {},
+            this.axios.get('http://localhost:5000/api/happiness-today', {
                 params: {
                     token: this._token
                 }
@@ -112,10 +109,7 @@ export default {
             })
         },
         getWeeklyReport() {
-            this.axios({
-                method: 'get',
-                url: 'http://localhost:5000/api/happiness',
-                headers: {},
+            this.axios.get('http://localhost:5000/api/happiness', {
                 params: {
                     token: this._token
                 }

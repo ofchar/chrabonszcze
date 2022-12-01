@@ -25,7 +25,7 @@
                     <div class="w-100 d-flex mt-4">
                         <button v-on:click="$router.push({ path: '/login' })" class="button-custom"
                             style="margin-right: auto;">Login</button>
-                        <button v-on:click="register()" class="button-custom"
+                        <button v-on:click="register()" id="register" class="button-custom"
                             style="margin-left: auto;">Register</button>
                     </div>
                 </div>
